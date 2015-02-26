@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 
 import com.anyfetch.companion.R;
 import com.anyfetch.companion.stats.MixPanel;
@@ -21,6 +23,16 @@ public class Marketpace {
         mMixpanel = mixpanel;
     }
     public void openMarketplace(final String origin) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+
+        String email = prefs.getString("userEmail", "unknown@email.com");
+        if(!email.equals("unknown@email.com")) {
+            email = "?email=" + email;
+        }
+        else {
+            email = "";
+        }
+        final String url = "https://manager.anyfetch.com/sign_in?redirection=%2Fmarketplace" + email;
         AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
         alertDialog.setTitle(mContext.getString(R.string.opening_manager));
         alertDialog.setMessage(mContext.getString(R.string.opening_manager_description));
@@ -29,7 +41,6 @@ public class Marketpace {
             public void onClick(DialogInterface dialog, int which) {
                 JSONObject props = MixPanel.buildProp("origin", origin);
                 mMixpanel.track("Open marketplace", props);
-                String url = "https://manager.anyfetch.com/marketplace";
                 Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setData(Uri.parse(url));
                 mContext.startActivity(i);
