@@ -25,13 +25,8 @@ public class Marketpace {
     public void openMarketplace(final String origin) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mContext);
 
-        String email = prefs.getString("userEmail", "unknown@email.com");
-        if(!email.equals("unknown@email.com")) {
-            email = "?email=" + email;
-        }
-        else {
-            email = "";
-        }
+        String email = prefs.getString("userEmail", "");
+        email = !email.isEmpty() ? "?email=" + email : "";
         final String url = "https://manager.anyfetch.com/sign_in?redirection=%2Fmarketplace" + email;
         AlertDialog alertDialog = new AlertDialog.Builder(mContext).create();
         alertDialog.setTitle(mContext.getString(R.string.opening_manager));
